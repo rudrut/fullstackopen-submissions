@@ -8,6 +8,14 @@ const Button = (props) => {
   )
 }
 
+const Header = (props) => {
+  return (
+    <div>
+      <h1>{props.title}</h1>
+    </div>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often',
@@ -19,32 +27,42 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blod tests when dianosing patients'
   ]
 
-  const [vote, setVote] = useState(0)
-  const [selected, setSelected] = useState(0)
+  const title1 = "Anecdote of the day"
+  const title2 = "Anecdote with most votes"
 
-  const points = new Array(anecdotes.length).fill(0)
-  
+  const [points] = useState([0,0,0,0,0,0,0])
+  const [count, setCount] = useState(0)
+  const [selected, setSelected] = useState(0)
+  const [mostVoted, setMostVoted] = useState(0)
+
   const randomIndex = () => {
     const number = Math.floor(Math.random() * anecdotes.length)
     setSelected(number)
   }
 
-  const voteIncrement = () => {
-    setVote(vote + 1)
+  const increment = (copy = Array.from(points), index) => {
+    setCount(prevCount => prevCount + 1)
+    copy[index]++
+    setMostVoted(copy.indexOf((Math.max(...copy))))
+    console.log(points)
+    console.log(count)
   }
 
   return (
     <div>
+      <Header title = {title1}/>
       {anecdotes[selected]}
-      <p>Has {vote} votes</p>
+      <p>Has {points[selected]} votes</p>
       <Button
-        handleClick={voteIncrement}
+        handleClick={() => increment(points, selected)}
         text="vote"
       />
       <Button
         handleClick={randomIndex}
         text="next anecdote"
       />
+      <Header title = {title2}/>
+      {anecdotes[mostVoted]}
     </div>
   )
 }
