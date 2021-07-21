@@ -1,11 +1,11 @@
 import React from "react";
 
 const PersonsDisplay = (props) => {
-    const { personsToShow } = props
+    const { personsToShow, button } = props
 
     return (
         <div>
-            {personsToShow}
+            {personsToShow} {button}
         </div>
     )
 };
