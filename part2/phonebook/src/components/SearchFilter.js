@@ -1,7 +1,7 @@
 import React from "react";
 
 const SearchFilter = (props) => {
-	console.log(props);
+	//console.log(props);
 	const { value, onChange } = props;
 	return (
 		<div>

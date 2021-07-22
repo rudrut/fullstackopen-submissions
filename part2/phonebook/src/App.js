@@ -4,13 +4,18 @@ import SearchFilter from "./components/SearchFilter";
 import Person from "./components/Person";
 import PersonForm from "./components/PersonForm";
 import personService from "./services/persons";
+import Notification from "./components/Notification"
+import Error from "./components/Error";
+import './index.css'
 
-const App = (props) => {
+const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
   const [showAll, setShowAll] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -24,7 +29,7 @@ const App = (props) => {
         person.name.toLowerCase().includes(search.toLowerCase())
       );
 
-  const addName = (e) => {
+  const addPerson = (e) => {
     e.preventDefault();
     const personObject = {
       name: newName,
@@ -32,35 +37,58 @@ const App = (props) => {
     };
 
     if (persons.find((person) => person.name === newName)) {
-      window.alert(`${newName} is already in the phonebook`);
+      if (window.confirm("Person already exists, do you wish to update number?")) {
+        const person = persons.find(p => p.name === newName)
+        const id = person.id
+        const changedPerson = {...person, number: newNumber}
+        
+        personService.update(id, changedPerson).then((returnedPerson) => {
+          setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
+          setMessage(
+            `Number '${person.number}' was successfully updated`
+          )
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        }).catch(() => {
+          setErrorMessage(
+            `Person '${person.name}' has already been deleted`
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
+        setNewName("");
+        setNewNumber("");
+        
+      }
     } else {
       personService.create(personObject).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
+        setMessage(
+          `Person '${returnedPerson.name}' was successfully added`
+        )
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
         setNewName("");
         setNewNumber("");
       });
-      console.log(persons);
     }
   };
 
-  const deleteName = (id, personObject) => {
+  const deleteName = (id) => {
+    const toDelete = id
+
     if (window.confirm("Do you really want to delete?")) {
-      personService.remove(id, personObject);
+      personService.remove(id)
+      setPersons(persons.filter(p => p.id !== toDelete))
     }
   };
-
-  /*useEffect(() => {
-		personService
-			.getAll()
-			.then(initialPersons => {
-				setPersons(initialPersons)
-			})
-	}, [])
-	*/
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
-    console.log(props.personsToShow);
+    //console.log(personsToShow);
   };
 
   const handleNameChange = (e) => {
@@ -74,10 +102,12 @@ const App = (props) => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
+      <Error message={errorMessage} />
       <SearchFilter value={search} onChange={handleSearchChange} />
       <h2>Add new contact info</h2>
       <PersonForm
-        onSubmit={addName}
+        onSubmit={addPerson}
         namevalue={newName}
         onNameChange={handleNameChange}
         numbervalue={newNumber}
