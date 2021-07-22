@@ -88,7 +88,6 @@ const App = () => {
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
-    //console.log(personsToShow);
   };
 
   const handleNameChange = (e) => {

@@ -36,7 +36,6 @@ const App = () => {
 
 	const handleSearchChange = (e) => {
 		setSearch(e.target.value);
-		//console.log(search)
 	};
 
 	return (
@@ -66,7 +65,6 @@ const App = () => {
 								.get("http://api.weatherstack.com/current", { params })
 								.then((response) => {
 									const apiResponse = response.data;
-									console.log(apiResponse);
 									temperature = apiResponse.current.temperature;
 									windSpeed = apiResponse.current.wind_speed;
 									imageSource = apiResponse.current.weather_icons;
