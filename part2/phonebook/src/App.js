@@ -73,31 +73,9 @@ const App = () => {
         }, 5000)
         setNewName("");
         setNewNumber("");
-      })
-      .catch(error => {
-        // this is the way to access the error message
-        if (newName.length < 3) {
-          setErrorMessage(`Person validation failed: name: Path 'name' (${newName}) is shorter than the minimum allowed length (3).`)
-          setTimeout(() => {
-            setErrorMessage(null)
-          }, 5000)
-        }
-        if (newNumber.length < 8) {
-          setErrorMessage(`Person validation failed: number: Path 'number' (${newNumber}) is shorter than the minimum allowed length (8).`)
-          setTimeout(() => {
-            setErrorMessage(null)
-          }, 5000)
-        }
-        if (newNumber.length < 8 && newName.length < 3) {
-          setErrorMessage(`Person validation failed: name: Path 'name' (${newName}) is shorter than the minimum allowed length (3). 
-          Person validation failed: number: Path 'number' (${newNumber}) is shorter than the minimum allowed length (8).`)
-          setTimeout(() => {
-            setErrorMessage(null)
-          }, 5000)
-        }
-      })
+      });
     }
-  }
+  };
 
   const deleteName = (id) => {
     const toDelete = id
